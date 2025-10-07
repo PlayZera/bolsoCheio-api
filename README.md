@@ -15,6 +15,8 @@ A aplicação segue o padrão de arquitetura em camadas:
 - .NET 9
 - ASP.NET Core Web API
 - Swagger/OpenAPI (Swashbuckle)
+- JWT Authentication (Bearer Token)
+- BCrypt (Hash de senhas)
 - Injeção de Dependência
 - Data Annotations (Validações)
 - Repositório em Memória (para demonstração)
@@ -71,7 +73,19 @@ Backend.BolsoCheioAPI.sln
 
 ## 📋 Endpoints Disponíveis
 
-### Products Controller
+### 🔐 Auth Controller (Autenticação)
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/api/auth/register` | Registrar novo usuário |
+| POST | `/api/auth/login` | Fazer login e obter token JWT |
+| GET | `/api/auth/profile` | Obter perfil do usuário autenticado |
+| PUT | `/api/auth/profile` | Atualizar perfil do usuário |
+| POST | `/api/auth/change-password` | Alterar senha |
+| POST | `/api/auth/validate-token` | Validar token JWT |
+| POST | `/api/auth/logout` | Fazer logout (invalidar token no cliente) |
+
+### 📦 Products Controller
 
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
@@ -85,7 +99,53 @@ Backend.BolsoCheioAPI.sln
 
 ## 📝 Exemplos de Uso
 
-### Criar Produto
+### 🔐 Autenticação
+
+#### Registrar Usuário
+```json
+POST /api/auth/register
+{
+  "name": "João Silva",
+  "email": "joao@email.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "11999999999",
+  "monthlyIncome": 5000.00
+}
+```
+
+#### Login
+```json
+POST /api/auth/login
+{
+  "email": "joao@email.com",
+  "password": "123456"
+}
+
+// Resposta:
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "monthlyIncome": 5000.00,
+    "currency": "BRL"
+  },
+  "expiresAt": "2025-10-08T10:30:00Z",
+  "tokenType": "Bearer"
+}
+```
+
+#### Requisições Autenticadas
+```bash
+# Adicione o header Authorization em todas as rotas protegidas
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📦 Produtos
+
+#### Criar Produto
 ```json
 POST /api/products
 {
@@ -96,7 +156,7 @@ POST /api/products
 }
 ```
 
-### Atualizar Produto
+#### Atualizar Produto
 ```json
 PUT /api/products/1
 {
@@ -110,6 +170,14 @@ PUT /api/products/1
 
 ## ✅ Validações
 
+### 🔐 Autenticação
+- **Nome**: Obrigatório, máximo 100 caracteres
+- **Email**: Obrigatório, formato válido, máximo 150 caracteres
+- **Senha**: Obrigatório, mínimo 6 caracteres
+- **Telefone**: Formato válido, máximo 15 caracteres
+- **Renda Mensal**: Não pode ser negativa
+
+### 📦 Produtos
 - **Nome**: Obrigatório, máximo 100 caracteres
 - **Descrição**: Máximo 500 caracteres
 - **Preço**: Obrigatório, deve ser maior que zero

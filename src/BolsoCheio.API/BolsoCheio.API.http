@@ -2,6 +2,73 @@
 
 @baseUrl = https://localhost:7094/api
 @baseUrlHttp = http://localhost:5297/api
+@token = {{login.response.body.token}}
+
+### ==================== AUTENTICAÇÃO ====================
+
+### Registrar novo usuário
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao.teste@email.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "11999999999",
+  "monthlyIncome": 5000.00
+}
+
+### Login de usuário
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@email.com",
+  "password": "123456"
+}
+
+### Obter perfil do usuário (precisa estar logado)
+GET {{baseUrl}}/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Atualizar perfil do usuário
+PUT {{baseUrl}}/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "João Silva Atualizado",
+  "phone": "11888888888",
+  "monthlyIncome": 6000.00,
+  "currency": "BRL",
+  "profileImageUrl": "https://example.com/avatar.jpg"
+}
+
+### Alterar senha
+POST {{baseUrl}}/auth/change-password
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "currentPassword": "123456",
+  "newPassword": "654321",
+  "confirmNewPassword": "654321"
+}
+
+### Validar token
+POST {{baseUrl}}/auth/validate-token
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### ==================== PRODUTOS ====================
 
 ### Obter todos os produtos
 GET {{baseUrl}}/products
@@ -50,7 +117,29 @@ Content-Type: application/json
 DELETE {{baseUrl}}/products/1
 Content-Type: application/json
 
-### Tentar criar produto com dados inválidos (para testar validação)
+### ==================== TESTES DE VALIDAÇÃO ====================
+
+### Tentar fazer login com dados inválidos
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario.inexistente@email.com",
+  "password": "senhaerrada"
+}
+
+### Tentar registrar com email já existente
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Teste Duplicado",
+  "email": "joao@email.com",
+  "password": "123456",
+  "confirmPassword": "123456"
+}
+
+### Tentar criar produto com dados inválidos
 POST {{baseUrl}}/products
 Content-Type: application/json
 
