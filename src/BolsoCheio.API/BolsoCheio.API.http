@@ -1,0 +1,62 @@
+### BolsoCheio API - Teste de Endpoints
+
+@baseUrl = https://localhost:7094/api
+@baseUrlHttp = http://localhost:5297/api
+
+### Obter todos os produtos
+GET {{baseUrl}}/products
+Content-Type: application/json
+
+### Obter todos os produtos (HTTP)
+GET {{baseUrlHttp}}/products
+Content-Type: application/json
+
+### Obter produto por ID
+GET {{baseUrl}}/products/1
+Content-Type: application/json
+
+### Obter produtos ativos
+GET {{baseUrl}}/products/active
+Content-Type: application/json
+
+### Pesquisar produtos por nome
+GET {{baseUrl}}/products/search?name=Produto
+Content-Type: application/json
+
+### Criar novo produto
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "name": "Novo Produto",
+  "description": "Descrição do novo produto",
+  "price": 29.99,
+  "stock": 100
+}
+
+### Atualizar produto
+PUT {{baseUrl}}/products/1
+Content-Type: application/json
+
+{
+  "name": "Produto Atualizado",
+  "description": "Descrição atualizada",
+  "price": 35.99,
+  "stock": 85,
+  "isActive": true
+}
+
+### Deletar produto
+DELETE {{baseUrl}}/products/1
+Content-Type: application/json
+
+### Tentar criar produto com dados inválidos (para testar validação)
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "description": "Produto sem nome",
+  "price": -10,
+  "stock": -5
+}
